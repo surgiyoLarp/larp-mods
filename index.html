@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Larp SMP - Mod Candidates</title>
+<style>
+:root{
+  --bg:#0f1115; --panel:#171a21; --panel2:#1d212b; --line:#2a2f3b;
+  --text:#e6e8ee; --muted:#9aa3b2; --accent:#7aa2ff;
+  --want:#3ecf8e; --look:#f5c542; --no:#ff6b6b; --added:#a78bfa; --todo:#3a4150;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code{background:var(--panel2);padding:1px 5px;border-radius:4px;font-size:.9em}
+header{padding:20px 16px 8px;max-width:1100px;margin:0 auto}
+h1{margin:0 0 4px;font-size:22px}
+.sub{color:var(--muted);font-size:13px}
+.intro{margin:8px 0 4px;padding:10px 14px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px}
+.stat b{font-size:15px}
+.bar{height:6px;background:var(--panel2);border-radius:99px;overflow:hidden;display:flex;margin-top:8px}
+.bar span{display:block;height:100%}
+.tools{position:sticky;top:0;z-index:5;background:rgba(15,17,21,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.tools-in{max-width:1100px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+input[type=search],select,.note{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font:inherit}
+input[type=search]{flex:1 1 220px;min-width:160px}
+select{max-width:100%}
+.chip{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:5px 11px;font:inherit;font-size:13px;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent);color:#0b1020;border-color:var(--accent);font-weight:600}
+.btn{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 12px;font:inherit;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:#0b1020;border-color:var(--accent);font-weight:600}
+.sp{flex:1}
+main{max-width:1100px;margin:0 auto;padding:8px 16px 60px}
+.sec{margin-top:22px}
+.sec h2{font-size:17px;margin:0 0 8px;display:flex;align-items:baseline;gap:8px}
+.sec h2 small{color:var(--muted);font-weight:400;font-size:12px}
+.row{display:grid;grid-template-columns:auto 1fr;gap:12px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--todo);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.row.s-look{border-left-color:var(--look)}
+.row.s-want{border-left-color:var(--want)}
+.row.s-no{border-left-color:var(--no);opacity:.6}
+.row.s-added{border-left-color:var(--added)}
+.sbtns{display:grid;grid-template-columns:repeat(5,34px);gap:4px;align-content:start}
+.sb{height:32px;border:1px solid var(--line);background:var(--panel2);border-radius:8px;cursor:pointer;font-size:15px;color:var(--text);padding:0}
+.sb:hover{border-color:var(--accent)}
+.sb.on.k-todo{background:var(--todo)}
+.sb.on.k-look{background:var(--look);color:#201a00}
+.sb.on.k-want{background:var(--want);color:#00200f}
+.sb.on.k-no{background:var(--no);color:#2a0000}
+.sb.on.k-added{background:var(--added);color:#150a30}
+.top{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.name{font-weight:600;font-size:15px}
+.pri{font-size:12px;border-radius:6px;padding:0 6px;background:var(--panel2);border:1px solid var(--line)}
+.pri.star{color:var(--look);border-color:var(--look)}
+.compat{font-size:12px;color:var(--muted)}
+.compat.warn{color:var(--look)}
+.what{margin:3px 0 0}
+.notes{margin:3px 0 0;color:var(--muted);font-size:13px}
+.note{width:100%;margin-top:7px;font-size:13px;padding:5px 8px}
+.empty{color:var(--muted);padding:30px 0;text-align:center}
+details{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-top:12px}
+summary{cursor:pointer;font-weight:600}
+details p{color:var(--muted);margin:8px 0 0}
+dialog{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:12px;max-width:640px;width:calc(100% - 32px);padding:16px}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog textarea{width:100%;height:320px;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px;font:13px/1.4 ui-monospace,Consolas,monospace}
+.dlg-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+@media (max-width:560px){
+  .row{grid-template-columns:1fr}
+  .sbtns{grid-template-columns:repeat(5,1fr)}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="h1">Larp SMP - Mod Candidates</h1>
+  <p class="intro" id="intro" hidden></p>
+  <div class="sub" id="sub"></div>
+  <div class="stats" id="stats"></div>
+  <div class="bar" id="bar"></div>
+</header>
+
+<div class="tools"><div class="tools-in">
+  <input type="search" id="q" placeholder="Search mods, descriptions, notes..." aria-label="Search">
+  <select id="sec" aria-label="Section"></select>
+  <button class="chip" data-pri="">All</button>
+  <button class="chip" data-pri="&#9733;" title="My short list">&#9733; Short list</button>
+  <button class="chip" data-pri="&#9675;">&#9675; Optional</button>
+  <select id="stf" aria-label="Status filter">
+    <option value="">Any status</option>
+    <option value="todo">&#9744; Undecided</option>
+    <option value="look">&#128064; Looking</option>
+    <option value="want">&#10004; Want</option>
+    <option value="no">&#10008; Rejected</option>
+    <option value="added">&#128295; Added</option>
+  </select>
+  <button class="chip" id="h182" title="Hide mods that need Cobblemon 1.8.2">Hide needs 1.8.2</button>
+  <span class="sp"></span>
+  <button class="btn primary" id="summ">Summary to send me</button>
+  <button class="btn" id="dl">Download</button>
+  <button class="btn" id="reset">Reset</button>
+</div></div>
+
+<main id="main"></main>
+
+<dialog id="dlg">
+  <h3 style="margin:0 0 8px">Your decisions</h3>
+  <textarea id="ta" readonly></textarea>
+  <div class="dlg-btns">
+    <button class="btn" id="dclose">Close</button>
+    <button class="btn primary" id="dcopy">Copy</button>
+  </div>
+</dialog>
+
+<script>
+const DATA = {"subtitle":"Fabric 1.21.1 \u00b7 Cobblemon \u00b7 pick one mod per job where noted","built":"2026-10-22 13:56","sections":[{"title":"1. Trainers and gym content","rows":[{"id":"rct-mod","box":"todo","pri":"\u2605","mod":"[RCT Mod](https://modrinth.com/project/rctmod)","what":"1,500+ trainers (Radical Red/Unbound), key-trainer progression, **built-in level cap**","compat":"\ud83e\uddea \u22651.8.0","notes":"Needs RCT API. Do not use with Carry On or Convenient Decors (trainer spawn bugs)."},{"id":"more-radical-trainers","box":"todo","pri":"\u25cb","mod":"[More Radical Trainers](https://modrinth.com/project/more-radical-trainers)","what":"Extra trainers for RCT","compat":"\ud83e\uddea","notes":""},{"id":"rad-gyms","box":"todo","pri":"\u25cb","mod":"[Rad Gyms](https://modrinth.com/project/rad-gyms)","what":"Roguelike gyms using RCT API","compat":"\ud83e\uddea **1.8.2**","notes":""},{"id":"radical-gyms-structures","box":"todo","pri":"\u25cb","mod":"[Radical Gyms \u0026 Structures](https://modrinth.com/project/radical-gyms-cobblemon)","what":"Naturally spawning gyms for RCT leaders","compat":"\ud83e\uddea","notes":""},{"id":"failrun","box":"todo","pri":"\u25cb","mod":"[Failrun](https://modrinth.com/project/failrun)","what":"Datapack: 8 gyms \u2192 Elite Four \u2192 Champion, 80+ trainers, raises the level cap as you go. Very hard.","compat":"datapack, not scanned","notes":"Needs RCT"},{"id":"kingdom-rct-league-curseforge","box":"todo","pri":"\u25cb","mod":"[Kingdom RCT League](https://www.curseforge.com/minecraft/mc-mods/kingdom-rct-league-for-cobblemon) (CurseForge)","what":"Ready-made 8 gym leaders + 4 Elite Four + Champion + Rival league","compat":"\u2705 \u22651.7.1","notes":"Needs TM Craft, Mega Showdown, RCT Mod. Last update Feb 2026."},{"id":"secret-base-trainer","box":"todo","pri":"\u25cb","mod":"[Secret Base Trainer](https://modrinth.com/project/cobblemon-secret-base-trainer)","what":"Turns a player\u0027s team into a standing \"battle clone\" NPC (gym leaders, challenges)","compat":"\u2705 \u22651.7","notes":"Needs RCT API + Architectury."}]},{"title":"2. Badges, level caps and league progression","rows":[{"id":"server-gym-league","box":"todo","pri":"\u25cb","mod":"[Server Gym League](https://modrinth.com/project/cobblemon-server-gym-league)","what":"**Player** gym leader / E4 / champion / challenger roles, seasonal badges","compat":"\u2705 \u22651.7.1","notes":"Updated May 2026. Good fit for player-run gyms."},{"id":"cobblemon-level-cap","box":"todo","pri":"\u2605","mod":"[Cobblemon Level Cap](https://modrinth.com/project/cobblemon-level-cap)","what":"Tag-based level caps: XP stops at the cap, over-cap Pok\u00e9mon disabled in battle, PC withdraw blocked","compat":"\u2705","notes":"Needs Architectury. **Skip if RCT\u0027s built-in cap is enough.** Last update May 2026."},{"id":"pokebadges","box":"todo","pri":"\u2605","mod":"[PokeBadges](https://modrinth.com/project/pokebadges)","what":"Modern gym badge system + Badge Box","compat":"\u2705","notes":"Needs Architectury. Pick **one** badge mod."},{"id":"ultimate-cobblemon-progression","box":"todo","pri":"\u25cb","mod":"[Ultimate Cobblemon Progression](https://modrinth.com/project/ultimate-cobblemon-progression)","what":"Level caps + species blocking gated by Pok\u00e9dex counts","compat":"\u2705 \u22651.6","notes":"Built for 1.7.3. Overlaps Level Cap / RCT cap."}]},{"title":"3. Battle facilities and dungeons","rows":[{"id":"cobblemon-battleplus","box":"todo","pri":"\u2605","mod":"[Cobblemon BattlePlus](https://modrinth.com/project/cobblemon-battleplus)","what":"Battle Factory (rental teams), Battle Tower, Battle Points, trainer NPC battles","compat":"\u2705 \u22651.8.1","notes":"Needs RCT API + Architectury. Placed/configured by admins, makes nothing by itself."},{"id":"cobblemon-battle-tower","box":"todo","pri":"\u25cb","mod":"[Cobblemon Battle Tower](https://modrinth.com/project/cobblemon-battle-tower)","what":"Simpler tower: 50+ floors, Singles/Doubles/Co-op/Boss modes, BP shop","compat":"\ud83e\uddea","notes":"v1.11.23 (Sep 18). Needs RCT API + Wild Battle API. Overlaps BattlePlus."},{"id":"cobblemon-dungeon","box":"todo","pri":"\u2605","mod":"[Cobblemon Dungeon](https://modrinth.com/project/cobblemon-dungeon)","what":"In-game dungeon editor: areas, gates, trainers, bosses, per-player progress","compat":"\u2705 \u22651.8.1","notes":"Needs RCT API. Best fit for multi-floor boss towers."},{"id":"cobblemon-co-op","box":"todo","pri":"\u25cb","mod":"[Cobblemon Co-op](https://modrinth.com/project/cobblemon-coop)","what":"Two players team up against RCT trainers","compat":"\u2705 \u003c1.9","notes":"Needs RCT Mod + API."}]},{"title":"4. Ranked, tournaments and challenge modes","rows":[{"id":"cobblemon-ranked","box":"todo","pri":"\u2605","mod":"[Cobblemon Ranked](https://modrinth.com/project/cobblemon-ranked)","what":"Elo ladder, seasons, arenas, singles/doubles, reward commands","compat":"\u2705 \u22651.7.2","notes":"Tournament brackets still run by staff."},{"id":"cobblemon-leaderboards","box":"todo","pri":"\u2605","mod":"[Cobblemon Leaderboards](https://modrinth.com/project/cobblemon-leaderboards)","what":"Wall boards / holograms (dex completion, shinies, PvP, breeding...)","compat":"\u2705 \u22651.8.0","notes":"The \"Hall of Fame\" piece."},{"id":"cobblemon-challenge","box":"todo","pri":"\u25cb","mod":"[Cobblemon Challenge](https://modrinth.com/project/cobblemon-challenge)","what":"Temporary per-battle level scaling for tournaments","compat":"\u2705 \u22651.8.1","notes":""},{"id":"cobblemon-nuzlocke-mode","box":"todo","pri":"\u25cb","mod":"[Cobblemon Nuzlocke Mode](https://modrinth.com/project/cobblemon-nuzlocke-mode)","what":"Nuzlocke rules","compat":"\u2705 \u22651.6.1","notes":"Hardcore events only"},{"id":"cobblemon-trainer-pass","box":"todo","pri":"\u25cb","mod":"[Cobblemon Trainer Pass](https://modrinth.com/project/trainer-pass)","what":"Battle-pass with free + premium reward tiers","compat":"\u2705","notes":"Premium via diamonds or CobbleDollars"}]},{"title":"5. Battle AI and battle screen","rows":[{"id":"recobbled-advanced-trainer-ai","box":"todo","pri":"\u25cb","mod":"[Recobbled Advanced Trainer AI](https://modrinth.com/project/cobblemon-recobbled-advanced-trainer-ai)","what":"Smarter trainer AI","compat":"\ud83e\uddea","notes":""},{"id":"gravel-s-extended-battles","box":"todo","pri":"\u25cb","mod":"[Gravel\u0027s Extended Battles](https://modrinth.com/project/gravels-extended-battles)","what":"Extended battle formats","compat":"\ud83e\uddea **1.8.2**","notes":""},{"id":"extended-battle-ui","box":"todo","pri":"\u25cb","mod":"[Extended Battle UI](https://modrinth.com/project/cobblemon-extended-battle-ui)","what":"More info in the battle screen","compat":"\u2705 \u22651.8.0","notes":"**Not checked for conflict with Battle Extras (installed).**"},{"id":"type-effectiveness","box":"todo","pri":"\u25cb","mod":"[Type Effectiveness](https://modrinth.com/project/cobblemon-effectiveness)","what":"Type chart in battle","compat":"\ud83e\uddea","notes":""},{"id":"counter","box":"todo","pri":"\u25cb","mod":"[Counter](https://modrinth.com/project/cobblemon-counter)","what":"Wild KO / capture streaks","compat":"\ud83e\uddea **1.8.2**","notes":"Needs TIM Core"}]},{"title":"6. NPCs and dialogue","rows":[{"id":"easy-npc","box":"todo","pri":"\u25cb","mod":"[Easy NPC](https://modrinth.com/project/easy-npc)","what":"General NPC / dialogue mod","compat":"\u2705","notes":"Not checked for Cobblemon battle hooks. Cobblemon already has built-in NPCs."},{"id":"kantonpcs","box":"todo","pri":"\u25cb","mod":"[KantoNPCs](https://modrinth.com/project/kantonpcs)","what":"NPCs with dialogue, shops, trades, move tutor","compat":"\u2705 \u22651.8.0","notes":"Possible Join Avenue piece"}]},{"title":"7. Safari and encounter zones","rows":[{"id":"cobblesafari","box":"todo","pri":"\u2605","mod":"[CobbleSafari](https://modrinth.com/project/cobblesafari)","what":"Safari dimension (18 biomes), timed access, flee-able Pok\u00e9mon, Safari Balls","compat":"\u2705 \u22651.8.0 \u003c1.9","notes":"\"Work in progress\" per its page. Free alternative: built-in Habitat Block."},{"id":"cobblezones","box":"todo","pri":"\u25cb","mod":"[CobbleZones](https://modrinth.com/project/cobblezones)","what":"Walk-through encounter zones with per-zone pools, in-game editor","compat":"\u2705 \u22651.7","notes":""},{"id":"wild-spawn","box":"todo","pri":"\u25cb","mod":"[Wild Spawn](https://modrinth.com/project/cobblemon-wild-spawn)","what":"Classic grass-style wild encounters","compat":"\u2705 \u22651.8.0","notes":"Needs Architectury"},{"id":"rustling-spots","box":"todo","pri":"\u25cb","mod":"[Rustling Spots](https://modrinth.com/project/cobblemon-rustling-spots)","what":"Dynamic hidden-encounter spots","compat":"\ud83e\uddea","notes":""},{"id":"cobblespawnregions","box":"todo","pri":"\u25cb","mod":"[Cobblespawnregions](https://modrinth.com/project/cobblespawnregions)","what":"Region-based custom spawning (for Kanto\u2192Unova arcs)","compat":"\u2705","notes":"Needs EverlastingUtils"}]},{"title":"8. Legendaries and mythicals","rows":[{"id":"legendary-monuments","box":"todo","pri":"\u2605","mod":"[Legendary Monuments](https://modrinth.com/project/legendary-monuments)","what":"Legendary spawn structures/dimensions (v8.2)","compat":"\ud83e\uddea \u22651.8.1","notes":"The ones you chose over extracting structures."},{"id":"legendary-lake-guardians-curseforge","box":"todo","pri":"\u25cb","mod":"[Legendary Lake Guardians](https://www.curseforge.com/minecraft/mc-mods/cobblemon-legendary-lake-guardians) (CurseForge)","what":"Lake guardian trio content","compat":"\ud83e\uddea datapack","notes":""},{"id":"explore-legendary-dungeons","box":"todo","pri":"\u25cb","mod":"[Explore Legendary Dungeons](https://modrinth.com/project/cobblemon-explore-legendary-dungeons)","what":"Legendary dungeon structures","compat":"\u2705 **1.8.2**","notes":"Needs Mega Showdown"},{"id":"professor-porker-s-legendary-dungeons","box":"todo","pri":"\u25cb","mod":"[Professor Porker\u0027s Legendary Dungeons](https://modrinth.com/project/professor-porkers-legendary-dungeons)","what":"Large dungeon structures from iconic scenes","compat":"datapack, not scanned","notes":""},{"id":"mythical-exploration","box":"todo","pri":"\u25cb","mod":"[Mythical Exploration](https://modrinth.com/project/cobblemon-mythical-exploration)","what":"Mythical Pok\u00e9mon structures","compat":"datapack, not scanned","notes":""},{"id":"extra-structures","box":"todo","pri":"\u25cb","mod":"[Extra Structures](https://modrinth.com/project/cobblemonextrastructures)","what":"More legendary structures","compat":"\ud83e\uddea data","notes":""},{"id":"ultra-wormholes","box":"todo","pri":"\u2605","mod":"[Ultra Wormholes](https://modrinth.com/project/cobblemon-ultra-wormholes)","what":"Raid-like Ultra Beast events","compat":"\ud83e\uddea","notes":"Needs Architectury + Wild Battle API"},{"id":"cobblemon-ultra-beasts-curseforge","box":"todo","pri":"\u25cb","mod":"[Cobblemon Ultra Beasts](https://www.curseforge.com/minecraft/mc-mods/cobblemon-ultra-beasts) (CurseForge)","what":"Ultra Beast Pok\u00e9mon","compat":"\ud83e\uddea","notes":""}]},{"title":"9. Towns, cities and structures","rows":[{"id":"trainer-structures","box":"todo","pri":"\u25cb","mod":"[Trainer Structures](https://modrinth.com/project/cobblemon-trainer-structures)","what":"Structures with trainers","compat":"\ud83e\uddea","notes":""},{"id":"cobblemon-cities-structures","box":"todo","pri":"\u25cb","mod":"[Cobblemon Cities \u0026 Structures](https://modrinth.com/project/cobblemon-cities-structures)","what":"Pok\u00e9mon cities and gyms","compat":"\u2705 \u22651.8.0","notes":"Needs RCT Mod, Lithostitched, CobbleFurnies, CobbleDollars, TBCS (5 deps)"}]},{"title":"10. Field moves and travel","rows":[{"id":"cobblemon-map-kit","box":"todo","pri":"\u25cb","mod":"[Cobblemon Map Kit](https://modrinth.com/project/cobblemon-map-kit)","what":"HM features: Cut, Rock Smash, Strength, Fly, Teleport, Flash, Rock Climb, bike, running shoes","compat":"\u2705 \u22651.8.0","notes":""},{"id":"sceneblocks","box":"todo","pri":"\u25cb","mod":"[SceneBlocks](https://modrinth.com/project/sceneblocks)","what":"Cut / Rock Smash / Strength / Flash blocks for builders","compat":"\u2705 \u22651.8.0","notes":"Needs GeckoLib. Overlaps Map Kit."},{"id":"escape-rope","box":"todo","pri":"\u25cb","mod":"[Escape Rope](https://modrinth.com/project/cobblemon-escape-rope)","what":"Item that returns you to your last safe place","compat":"\u2705 \u22651.8.0 \u003c1.9","notes":"Needs Matthiesen Core"},{"id":"pok-mon-fly-transitions","box":"todo","pri":"\u25cb","mod":"[Pok\u00e9mon Fly Transitions](https://modrinth.com/project/pokemon-fly-transitions)","what":"Pok\u00e9mon-style Fly animation for teleports/waystones","compat":"\u2705","notes":""},{"id":"cobblemon-breathers","box":"todo","pri":"\u25cb","mod":"[Cobblemon Breathers](https://modrinth.com/project/cobblemon-breathers)","what":"Underwater breathers","compat":"\u2705 \u22651.8.0 \u003c1.9","notes":"Needs Matthiesen Core"},{"id":"cobblemon-pokestops","box":"todo","pri":"\u25cb","mod":"[Cobblemon Pokestops](https://modrinth.com/project/cobblemon-pokestops)","what":"Pok\u00e9mon GO style Pok\u00e9stops","compat":"\u2705 \u22651.8.0 \u003c1.9","notes":"Needs GeckoLib, Matthiesen Core"}]},{"title":"11. Riding and camping","rows":[{"id":"mount-mastery","box":"todo","pri":"\u25cb","mod":"[Mount Mastery](https://modrinth.com/project/cobblemon-mount-mastery)","what":"Riding trains your mount\u0027s ride stats","compat":"\u2705 \u22651.8.0","notes":""},{"id":"cre-ride-everything","box":"todo","pri":"\u25cb","mod":"[CRE (ride everything)](https://modrinth.com/project/cre)","what":"Rideable for 910+ more Pok\u00e9mon","compat":"\u2705 **1.8.2**","notes":"v0.0.3, very new"},{"id":"cobblemon-tents","box":"todo","pri":"\u25cb","mod":"[Cobblemon Tents](https://modrinth.com/project/cobblemon-tents)","what":"Camping tents","compat":"\u2705","notes":"Needs GeckoLib, Cloth Config"},{"id":"cobblemon-picnic","box":"todo","pri":"\u25cb","mod":"[Cobblemon Picnic](https://modrinth.com/project/cobblemon-picnic)","what":"Picnic table that re-rolls nearby spawns","compat":"\u2705","notes":"Needs Architectury"}]},{"title":"12. Hunts, shinies and spawn events","rows":[{"id":"cobblemon-hunt","box":"todo","pri":"\u25cb","mod":"[Cobblemon Hunt](https://modrinth.com/project/cobblemon-hunt)","what":"Hunt specific Pok\u00e9mon for money","compat":"\ud83e\uddea \u22651.8.0","notes":""},{"id":"mass-outbreaks","box":"todo","pri":"\u25cb","mod":"[Mass Outbreaks](https://modrinth.com/project/cobblemon-mass-outbreaks)","what":"Mass outbreak events","compat":"\ud83e\uddea","notes":""},{"id":"unchained","box":"todo","pri":"\u25cb","mod":"[Unchained](https://modrinth.com/project/cobblemon-unchained)","what":"KO/capture chains raise shiny odds; natural Hidden Abilities","compat":"\ud83e\uddea **1.8.2**","notes":"Needs TIM Core"},{"id":"shiny-days","box":"todo","pri":"\u25cb","mod":"[Shiny Days](https://modrinth.com/project/cobblemon-shiny-days)","what":"Boost shiny rates on set days","compat":"\u2705","notes":""},{"id":"pokehighlight","box":"todo","pri":"\u25cb","mod":"[Pokehighlight](https://modrinth.com/project/pokehighlight)","what":"Community-Day style spawn events","compat":"\u2705 \u22651.7","notes":""},{"id":"spawn-notification","box":"todo","pri":"\u25cb","mod":"[Spawn Notification](https://modrinth.com/project/cobblemon-spawn-notification)","what":"Alerts for important spawns (safe replacement for the broken Spawn Alerts)","compat":"\ud83e\uddea **1.8.2**","notes":"Needs TIM Core"},{"id":"repel","box":"todo","pri":"\u25cb","mod":"[Repel](https://modrinth.com/project/cobblemon-repel)","what":"Blocks that stop spawns in a radius","compat":"\ud83e\uddea","notes":""}]},{"title":"13. Breeding and eggs","rows":[{"id":"cobbreeding","box":"todo","pri":"\u2605","mod":"[Cobbreeding](https://modrinth.com/project/cobbreeding)","what":"Pok\u00e9mon breeding","compat":"\ud83e\uddea **1.8.2**","notes":"v2.4.1 (Oct 12). The proven breeding mod."},{"id":"cobblemon-incubator","box":"todo","pri":"\u25cb","mod":"[Cobblemon Incubator](https://modrinth.com/project/cobblemon-incubator)","what":"Faster egg hatching","compat":"\u2705","notes":"Needs Cobbreeding"},{"id":"daycare","box":"todo","pri":"\u25cb","mod":"[Daycare+](https://modrinth.com/project/daycareplus)","what":"Advanced daycare/breeding","compat":"\u2705 **~1.8.2**","notes":"Needs LilyLib, LilyCobble, Polymer \u2014 big dependency stack"},{"id":"uncharted-core-breeding-curseforge","box":"todo","pri":"\u25cb","mod":"[Uncharted Core Breeding](https://www.curseforge.com/minecraft/mc-mods/uncharted-core-cobblemon-breeding) (CurseForge)","what":"Another breeding mod","compat":"\u2705 \u22651.8.0","notes":"119 downloads; unproven"}]},{"title":"14. Training, EVs and XP","rows":[{"id":"ev-pool","box":"todo","pri":"\u25cb","mod":"[EV Pool](https://modrinth.com/project/cobblemon-ev-pool)","what":"Banks EVs into pools you assign manually","compat":"\u2705 **1.8.2**","notes":""},{"id":"cobbleeffort-vr","box":"todo","pri":"\u25cb","mod":"[Cobbleeffort VR](https://modrinth.com/project/cobbleeffortvr)","what":"Different EV mechanic","compat":"\u2705","notes":"Needs Architectury"},{"id":"champions-training-curseforge","box":"todo","pri":"\u25cb","mod":"[Champions Training](https://www.curseforge.com/minecraft/mc-mods/cobblemon-champions-training) (CurseForge)","what":"Replaces EVs with spendable points; build slots","compat":"\u2705","notes":"Changes core training \u2014 skip unless wanted"},{"id":"capture-xp","box":"todo","pri":"\u25cb","mod":"[Capture XP](https://modrinth.com/project/cobblemon-capture-xp)","what":"XP for your team when you capture","compat":"\ud83e\uddea **1.8.2**","notes":"Needs TIM Core"},{"id":"mid-battle-exp-curseforge","box":"todo","pri":"\u25cb","mod":"[Mid-Battle EXP](https://www.curseforge.com/minecraft/mc-mods/cobblemon-mid-battle-exp) (CurseForge)","what":"XP and level-ups on each KO","compat":"\u2705 \u22651.7","notes":"Needs Architectury"},{"id":"xp-overhaul","box":"todo","pri":"\u25cb","mod":"[XP Overhaul](https://modrinth.com/project/cobblemon-xp-overhaul)","what":"Configurable XP for captures, battles, player progression","compat":"\u2705 \u22651.8.0","notes":"Would interact with the 2.0\u00d7 XP setting"},{"id":"player-xp","box":"todo","pri":"\u25cb","mod":"[Player XP](https://modrinth.com/project/cobblemon-playerxp)","what":"XP from battles","compat":"\ud83e\uddea","notes":""},{"id":"tm-craft","box":"todo","pri":"\u25cb","mod":"[TM Craft](https://modrinth.com/project/tmcraft)","what":"Crafting recipes for TMs","compat":"\ud83e\uddea **1.8.2**","notes":"Cobblemon 1.8 has a built-in TM Machine \u2014 may be redundant. Mismatch with Simple TMs found in testing."}]},{"title":"15. Fossils and digging","rows":[{"id":"paleontology","box":"todo","pri":"\u2605","mod":"[Paleontology](https://modrinth.com/project/cobblemon-paleontology)","what":"Fossil villager profession","compat":"\ud83e\uddea **1.8.2**","notes":""},{"id":"fossil-deposits","box":"todo","pri":"\u25cb","mod":"[Fossil Deposits](https://modrinth.com/project/cobblemon-fossil-deposits)","what":"Excavatable fossil beds","compat":"\u2705 \u22651.7.3","notes":""},{"id":"fossils-plus","box":"todo","pri":"\u25cb","mod":"[Fossils Plus](https://modrinth.com/project/cobblemon-fossils-plus)","what":"Extra fossils","compat":"\u2705","notes":"Last update Feb 2026"},{"id":"underground-mining-minigame","box":"todo","pri":"\u25cb","mod":"[Underground Mining Minigame](https://modrinth.com/project/cobblemon-underground-mining-minigame)","what":"Gen-4 Underground style mining","compat":"\ud83e\uddea","notes":""}]},{"title":"16. Fishing, berries and item pickups","rows":[{"id":"cobblerods","box":"todo","pri":"\u25cb","mod":"[Cobblerods](https://modrinth.com/project/cobblerods)","what":"Bonuses for Pok\u00e9 Rods","compat":"\u2705","notes":""},{"id":"legendary-fishing","box":"todo","pri":"\u25cb","mod":"[Legendary Fishing](https://modrinth.com/project/legendary-fishing-cobblemon)","what":"Fish up legendary water Pok\u00e9mon","compat":"\u2705","notes":""},{"id":"berry-pouch","box":"todo","pri":"\u25cb","mod":"[Berry Pouch](https://modrinth.com/project/berry-pouch)","what":"Berry gadgets","compat":"\ud83e\uddea","notes":""},{"id":"utility","box":"todo","pri":"\u25cb","mod":"[Utility+](https://modrinth.com/project/cobblemon-utility-plus)","what":"Utility items","compat":"\ud83e\uddea","notes":""},{"id":"cobbleloots","box":"todo","pri":"\u25cb","mod":"[Cobbleloots](https://modrinth.com/project/cobbleloots)","what":"Game-style item pickups/loot","compat":"\ud83e\uddea","notes":""}]},{"title":"17. Dex rewards, charms and bonds","rows":[{"id":"dex-rewards","box":"todo","pri":"\u2605","mod":"[Dex Rewards](https://modrinth.com/project/dex-rewards)","what":"Pok\u00e9dex completion rewards","compat":"\ud83e\uddea \u22651.8.0","notes":"v3.2.0 rebuilt for 1.8 (old configs break). Pick **one** dex-reward mod."},{"id":"pokedex-rewards-mrbonnieg","box":"todo","pri":"\u25cb","mod":"[Pokedex Rewards (MrBonnieG)](https://modrinth.com/project/cobblemon-pokedex-rewards)","what":"Chest-menu dex rewards","compat":"\u2705","notes":"Alternative to Dex Rewards"},{"id":"dexreward-gokandev-curseforge","box":"todo","pri":"\u25cb","mod":"[DexReward (GokanDev)](https://www.curseforge.com/minecraft/mc-mods/cobblemon-dexreward-pokedex-progression-rewards) (CurseForge)","what":"Another dex-reward mod","compat":"\u2705 \u22651.7.3 \u003c1.9","notes":"Alternative"},{"id":"cobblemon-charms","box":"todo","pri":"\u25cb","mod":"[Cobblemon Charms](https://modrinth.com/project/cobblemon-charms)","what":"Dex milestones unlock Shiny / EXP / Catch / type charms (Accessories slot)","compat":"\u2705 **1.8.2**","notes":"Pack already has Accessories"},{"id":"cobblemarks-plus","box":"todo","pri":"\u25cb","mod":"[Cobblemarks Plus](https://modrinth.com/project/cobblemarks-plus)","what":"Extra marks (titles)","compat":"\ud83e\uddea","notes":""},{"id":"perfect-partners","box":"todo","pri":"\u25cb","mod":"[Perfect Partners](https://modrinth.com/project/perfectpartners)","what":"Headpats, walking friendship, gifts","compat":"\ud83e\uddea \u22651.8.0","notes":""},{"id":"release-rewards","box":"todo","pri":"\u25cb","mod":"[Release Rewards](https://modrinth.com/project/cobblemon-release-rewards)","what":"Rewards for releasing Pok\u00e9mon","compat":"\ud83e\uddea **1.8.2**","notes":""}]},{"title":"18. Pastures, bases and storage","rows":[{"id":"cobbleworkers-curseforge","box":"todo","pri":"\u25cb","mod":"[Cobbleworkers](https://www.curseforge.com/minecraft/mc-mods/cobbleworkers) (CurseForge)","what":"Pasture block gives Pok\u00e9mon jobs","compat":"\ud83e\uddea **1.8.2**","notes":""},{"id":"cobblebase","box":"todo","pri":"\u25cb","mod":"[Cobblebase](https://modrinth.com/project/cobblebase)","what":"Palworld-style base management","compat":"\u2705 \u22651.8.0","notes":""},{"id":"safe-pastures","box":"todo","pri":"\u25cb","mod":"[Safe Pastures](https://modrinth.com/project/cobblemon-safepastures)","what":"Pastures that don\u0027t hurt your builds","compat":"\ud83e\uddea","notes":""},{"id":"box-link","box":"todo","pri":"\u25cb","mod":"[Box Link](https://modrinth.com/project/cobblemon-box-link)","what":"Quick access to PC boxes","compat":"\ud83e\uddea","notes":""},{"id":"pc-plus","box":"todo","pri":"\u25cb","mod":"[PC Plus](https://modrinth.com/project/cobblemon-pc-plus)","what":"One scrollable PC list, filters, favorites","compat":"\u2705 \u22651.7","notes":""}]},{"title":"19. Currency and shops","rows":[{"id":"cobbledollars","box":"todo","pri":"\u2605","mod":"[CobbleDollars](https://modrinth.com/project/cobbledollars)","what":"Money + merchants","compat":"\ud83e\uddea","notes":"v2.0.0 Beta 6.1 (Jul 22). Pick **one** economy."},{"id":"cobblemon-economy","box":"todo","pri":"\u25cb","mod":"[Cobblemon Economy](https://modrinth.com/project/cobblemon-economy)","what":"Pok\u00e9Dollars, shop NPCs, rotating quest boards","compat":"\ud83e\uddea","notes":"Needs Impactor. Bridges to CobbleDollars."},{"id":"beconomy","box":"todo","pri":"\u25cb","mod":"[BEconomy](https://modrinth.com/project/beconomy)","what":"Virtual economy","compat":"\u2705","notes":""},{"id":"cobblemon-boosters","box":"todo","pri":"\u25cb","mod":"[Cobblemon Boosters](https://modrinth.com/project/cobblemon-boosters)","what":"Timed server boosters","compat":"\u2705 \u22651.8.0 \u003c1.9","notes":"Needs Matthiesen Core"}]},{"title":"20. Trading and auctions","rows":[{"id":"cobblemon-gts","box":"todo","pri":"\u2605","mod":"[Cobblemon GTS](https://modrinth.com/project/cobblemon-gts)","what":"Global Trading System (sell Pok\u00e9mon/items)","compat":"\ud83e\uddea \u22651.8.0","notes":""},{"id":"auction-house","box":"todo","pri":"\u25cb","mod":"[Auction House](https://modrinth.com/project/auction-house-cobb)","what":"Auction house","compat":"\u2705","notes":"Needs Cobblemon Economy"},{"id":"wonder-trade","box":"todo","pri":"\u25cb","mod":"[Wonder Trade](https://modrinth.com/project/cobblemon-wonder-trade)","what":"Trade in, get a random Pok\u00e9mon","compat":"\u2705","notes":""},{"id":"cobblemon-cards","box":"todo","pri":"\u25cb","mod":"[Cobblemon Cards](https://modrinth.com/project/cobblemon-cards)","what":"Collectable trading cards","compat":"\u2705 \u22651.8.1 \u003c1.9","notes":"Many dependencies"}]},{"title":"21. Quests and daily tasks","rows":[{"id":"quests-reloaded-curseforge-fabric-build","box":"todo","pri":"\u2605","mod":"[Quests Reloaded](https://www.curseforge.com/minecraft/mc-mods/cobblemon-quest-reloaded) (CurseForge Fabric build)","what":"Cobblemon quests inside FTB Quests","compat":"\ud83e\uddea \u22651.8.0","notes":"Needs FTB Quests + Library + Teams from `maven.ftb.dev`"},{"id":"cobblemon-dailies","box":"todo","pri":"\u25cb","mod":"[Cobblemon Dailies](https://modrinth.com/project/cobblemon-dailies)","what":"Daily quests; any NPC becomes a quest giver","compat":"\u2705 \u22651.7","notes":"Pick Dailies *or* Quests Reloaded, or both for different jobs"},{"id":"research-tasks","box":"todo","pri":"\u25cb","mod":"[Research Tasks](https://modrinth.com/project/cobblemon-research-tasks)","what":"Legends Arceus style research tasks","compat":"\ud83e\uddea","notes":""},{"id":"mmo-skills","box":"todo","pri":"\u25cb","mod":"[MMO Skills](https://modrinth.com/project/cobblemon-mmo-skills)","what":"mcMMO-style skills and leaderboards","compat":"\u2705 \u22651.8.1 \u003c1.9","notes":""}]},{"title":"22. Raids and bosses","rows":[{"id":"raid-dens","box":"todo","pri":"\u2605","mod":"[Raid Dens](https://modrinth.com/project/cobblemonraiddens)","what":"1\u20137\u2605 instanced raids, JSON-scripted bosses","compat":"\ud83e\uddea \u22651.8.0","notes":"v0.13.4 (Oct 19). Most used raid mod."},{"id":"crd-broadcasts","box":"todo","pri":"\u25cb","mod":"[CRD Broadcasts](https://modrinth.com/project/crd-broadcasts)","what":"Remote raiding + spawn announcements","compat":"\u2705 \u22651.7","notes":""},{"id":"raid-icons-curseforge","box":"todo","pri":"\u25cb","mod":"[Raid Icons](https://www.curseforge.com/minecraft/mc-mods/cobblemon-raid-icons) (CurseForge)","what":"Raid Den crystals on the map","compat":"\u2705 client","notes":""},{"id":"cobbleboss","box":"todo","pri":"\u25cb","mod":"[Cobbleboss](https://modrinth.com/project/cobbleboss)","what":"Custom bosses","compat":"\ud83e\uddea","notes":""},{"id":"trials-edition","box":"todo","pri":"\u25cb","mod":"[Trials Edition](https://modrinth.com/project/cobblemon-trials-edition)","what":"Replaces spawners/trial spawners with Cobblemon trials","compat":"\ud83e\uddea \u22651.8.0","notes":""}]},{"title":"23. Game Corner and casino","rows":[{"id":"cobblemon-minigames","box":"todo","pri":"\u2605","mod":"[Cobblemon MiniGames](https://modrinth.com/project/cobblemon-minigames)","what":"Game Corner: **Voltorb Flip**, Roulette, Slots, Blackjack, Snake, Derby, Pinball, gacha","compat":"\u2705 \u22651.8.0","notes":"Needs Architectury. Overlaps Casino Rocket / Cobblegamble."},{"id":"casino-rocket","box":"todo","pri":"\u25cb","mod":"[Casino Rocket](https://modrinth.com/project/casino-rocket)","what":"Slots, Blackjack, gacha","compat":"\ud83e\uddea","notes":"Needs CobbleDollars"},{"id":"cobblegamble","box":"todo","pri":"\u25cb","mod":"[Cobblegamble](https://modrinth.com/project/cobblegamble)","what":"Poker, Roulette, races with CobbleDollars","compat":"\u2705","notes":""},{"id":"cobbledgacha-curseforge","box":"todo","pri":"\u25cb","mod":"[Cobbledgacha](https://www.curseforge.com/minecraft/mc-mods/cobbledgacha) (CurseForge)","what":"Gacha machines","compat":"\ud83e\uddea","notes":""}]},{"title":"24. Contests and expeditions","rows":[{"id":"cobble-contests","box":"todo","pri":"\u25cb","mod":"[Cobble Contests](https://modrinth.com/project/cobble-contests)","what":"Pok\u00e9mon contests","compat":"\ud83e\uddea","notes":"Beta; last update Dec 2025"},{"id":"expeditions","box":"todo","pri":"\u25cb","mod":"[Expeditions](https://modrinth.com/project/cobblemon_expeditions)","what":"Send Pok\u00e9mon on timed expeditions for loot/XP","compat":"\ud83e\uddea \u22651.8.0","notes":""}]},{"title":"25. Decor, museum and building","rows":[{"id":"cobblefurnies","box":"todo","pri":"\u25cb","mod":"[CobbleFurnies](https://modrinth.com/project/cobblefurnies)","what":"Pok\u00e9mon-themed furniture","compat":"\ud83e\uddea","notes":""},{"id":"stone-statues-curseforge","box":"todo","pri":"\u2605","mod":"[Stone Statues](https://www.curseforge.com/minecraft/mc-mods/cobblemon-stone-statues) (CurseForge)","what":"Statues of any Pok\u00e9mon model","compat":"\ud83e\uddea","notes":"Museum / trophy hall"},{"id":"minimons","box":"todo","pri":"\u25cb","mod":"[Minimons](https://modrinth.com/project/cobblemon-minimons)","what":"Capture mini 3D Pok\u00e9mon as decorations","compat":"\ud83e\uddea","notes":""},{"id":"cobblewand","box":"todo","pri":"\u25cb","mod":"[Cobblewand](https://modrinth.com/project/cobblewand)","what":"Wand to place Pok\u00e9mon or statues","compat":"\u2705","notes":"Needs Architectury"},{"id":"kanto-blocks-models-items-teleports","box":"todo","pri":"\u25cb","mod":"[Kanto Blocks](https://modrinth.com/project/kantoblocks) / [Models](https://modrinth.com/project/kantomodels) / [Items](https://modrinth.com/project/kantoitems) / [Teleports](https://modrinth.com/project/kantoteleports)","what":"Kanto-style building and map-making blocks","compat":"Teleports \u2705; others not scanned","notes":""},{"id":"armors","box":"todo","pri":"\u25cb","mod":"[Armors](https://modrinth.com/project/cobblemon-armors)","what":"New armor sets","compat":"\ud83e\uddea **1.8.2**","notes":""}]},{"title":"26. Pokedex and info screens","rows":[{"id":"pok-nav","box":"todo","pri":"\u25cb","mod":"[Pok\u00e9nav](https://modrinth.com/project/cobblemon-pokenav)","what":"Pok\u00e9nav item (RSE style), 11M downloads","compat":"\ud83e\uddea \u22651.8.0","notes":""},{"id":"wiki-gui","box":"todo","pri":"\u25cb","mod":"[Wiki GUI](https://modrinth.com/project/cobblemon-wiki-gui)","what":"`/pwiki` Pok\u00e9mon info","compat":"\ud83e\uddea \u22651.8.0","notes":""},{"id":"cobbledex-for-rei-emi-jei","box":"todo","pri":"\u25cb","mod":"[Cobbledex for REI/EMI/JEI](https://modrinth.com/project/cobbledex-rei-emi-jei)","what":"Cobblemon info in your recipe viewer","compat":"\ud83e\uddea","notes":"Pack already has JEI"},{"id":"where-does-it-spawn","box":"todo","pri":"\u25cb","mod":"[Where Does It Spawn](https://modrinth.com/project/cobblemon-where-does-it-spawn)","what":"Search where any Pok\u00e9mon spawns","compat":"\u2705 \u22651.8.1","notes":""},{"id":"cobblemon-pok-dex","box":"todo","pri":"\u25cb","mod":"[Cobblemon Pok\u00e9dex](https://modrinth.com/project/cobblemon-pokedex)","what":"Quick species info","compat":"\ud83e\uddea \u22651.8.0","notes":""},{"id":"chiselmon","box":"todo","pri":"\u25cb","mod":"[Chiselmon](https://modrinth.com/project/chiselmon)","what":"Alerts, tooltips, PC bookmarks","compat":"\ud83e\uddea ~1.8.0","notes":""}]},{"title":"27. Party, PC and inventory tools","rows":[{"id":"more-cobblemon-tweaks","box":"todo","pri":"\u2605","mod":"[More Cobblemon Tweaks](https://modrinth.com/project/more-cobblemon-tweaks)","what":"Broad client QoL","compat":"\ud83e\uddea **1.8.2**","notes":"8M downloads"},{"id":"party-extras","box":"todo","pri":"\u25cb","mod":"[Party Extras](https://modrinth.com/project/cobblemon-party-extras)","what":"Party/summary tooltips","compat":"\ud83e\uddea","notes":""},{"id":"smartphone","box":"todo","pri":"\u25cb","mod":"[Smartphone](https://modrinth.com/project/cobblemon-smartphone)","what":"Phone for healing, PC, etc.","compat":"\ud83e\uddea","notes":""},{"id":"ball-satchel","box":"todo","pri":"\u25cb","mod":"[Ball Satchel](https://modrinth.com/project/cobblemon-ball-satchel)","what":"Dedicated Pok\u00e9 Ball storage","compat":"\u2705 **1.8.2**","notes":""},{"id":"occupied-pok-balls","box":"todo","pri":"\u25cb","mod":"[Occupied Pok\u00e9balls](https://modrinth.com/project/cobblemon-occupied-pokeballs)","what":"Party Pok\u00e9mon as a physical Pok\u00e9 Ball item","compat":"\u2705 \u22651.7.1","notes":""},{"id":"ev-tracker-ev-iv-display-curseforge","box":"todo","pri":"\u25cb","mod":"[EV Tracker](https://www.curseforge.com/minecraft/mc-mods/cobble-ev-tracker) / [EV\u0026IV Display](https://www.curseforge.com/minecraft/mc-mods/ev-iv-display-cobblemon) (CurseForge)","what":"Client HUDs for EVs/IVs","compat":"EV Tracker \u2705; Display not scanned","notes":""}]}],"info":[{"title":"Already in the pack \u2014 upgrade, don\u0027t re-add","text":"Mega Showdown 1.2.0 \u2192 1.3.1 (needs Cobblemon 1.8.2) \u00b7 Catch Rate Display 2.8.22 \u2192 2.12.3 \u00b7 Catch Indicator 1.7.0 \u2192 3.0 \u00b7 Pokeblocks 1.4.0 \u2192 1.5.0 \u00b7 Battle Extras 1.13.45 (current) \u00b7 Cobblemon Integrations 1.1.8 (current)"},{"title":"Do not install on 1.8.x","text":"Spawn Alerts \u00b7 NoValidation \u00b7 UI Tweaks \u00b7 Ride On \u00b7 Academy Integration \u00b7 Interact Wheel Additions \u00b7 Granular Shinies \u00b7 Cobblemon Snap \u00b7 Outbreaks \u00b7 Nests \u0026 Dens \u00b7 Cobbletracker \u00b7 Special Fossils (1.7.3 only) \u00b7 CobblePCEnhanced (\u003c1.8.2) \u00b7 EV Uncapper (1.7.3 only) \u00b7 Catch On Defeat and Linkie (1.8.1 only; break on 1.8.2) \u00b7 Pokerus, Drop Loot Tables, Pasture Collector (1.8.1 only) \u00b7 Mega Showdown Ores / Cobblemore Lib / Simple Pok\u00e9centers (missing Pommel library)"},{"title":"Mutually exclusive","text":"Battle Extras \u21c4 UI Tweaks / CobbleStats / Move Inspector \u00b7 Mega Showdown \u21c4 AllTheMons \u00b7 Journey Mounts \u21c4 Lost Lore \u00b7 pick one economy \u00b7 pick one badge mod \u00b7 pick one dex-reward mod"}],"title":"Larp SMP - Mod Wishlist (opinions wanted)","intro":"Help me pick what goes into our Cobblemon server pack. Use the buttons on the left of each mod (check = want it, cross = no thanks, eyes = maybe) and add a note if you like. Your picks stay in your browser. When you are done, press the Send my opinions button at the top and send me the text it gives you. Use the search box and the section dropdown to jump around.","summaryLabel":"Send my opinions"};
+const KEY = 'larp-mod-candidates-v1';
+const ST = [
+  {k:'todo', i:'☐', l:'Undecided'},
+  {k:'look', i:'👀', l:'Looking into it'},
+  {k:'want', i:'✔', l:'Want it'},
+  {k:'no',   i:'✘', l:'Rejected'},
+  {k:'added',i:'🔧', l:'Already added'}
+];
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+function persist(){ try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} }
+
+const esc = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function inline(s){
+  let t = esc(s);
+  t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  t = t.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+  t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
+  return t;
+}
+function plain(s){
+  return String(s || '').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/\*\*/g,'').replace(/`/g,'').trim();
+}
+
+const rows = [];
+DATA.sections.forEach((s, si) => s.rows.forEach(r => rows.push(Object.assign({}, r, {si: si}))));
+const statusOf = r => (saved[r.id] && saved[r.id].status) || r.box || 'todo';
+const noteOf = r => (saved[r.id] && saved[r.id].note) || '';
+const needs182 = r => String(r.compat).indexOf('1.8.2') !== -1;
+const only181 = r => /1\.8\.1 only/.test(String(r.compat));
+
+const F = {q:'', sec:'', pri:'', stf:'', h182:false};
+
+function setStatus(id, k){
+  const r = rows.find(x => x.id === id);
+  saved[id] = Object.assign({}, saved[id], {status: k});
+  // keep the file's own mark if the user picks the same thing, so nothing is stored needlessly
+  if (r && r.box === k && !saved[id].note) delete saved[id];
+  persist();
+}
+function setNote(id, v){
+  const cur = saved[id] || {};
+  saved[id] = Object.assign({}, cur, {note: v});
+  if (!v && !saved[id].status) delete saved[id];
+  persist();
+}
+
+function visible(r){
+  if (F.sec !== '' && String(r.si) !== F.sec) return false;
+  if (F.pri && r.pri !== F.pri) return false;
+  if (F.stf && statusOf(r) !== F.stf) return false;
+  if (F.h182 && needs182(r)) return false;
+  if (F.q){
+    const hay = (plain(r.mod)+' '+plain(r.what)+' '+plain(r.notes)+' '+plain(r.compat)+' '+noteOf(r)).toLowerCase();
+    if (!F.q.toLowerCase().split(/\s+/).every(w => hay.indexOf(w) !== -1)) return false;
+  }
+  return true;
+}
+
+function rowHtml(r){
+  const k = statusOf(r);
+  const btns = ST.map(s => '<button class="sb k-'+s.k+(s.k===k?' on':'')+'" data-id="'+esc(r.id)+'" data-k="'+s.k+'" title="'+s.l+'" aria-label="'+s.l+'">'+s.i+'</button>').join('');
+  const warn = (needs182(r) || only181(r)) ? ' warn' : '';
+  const star = r.pri === '★' ? ' star' : '';
+  return '<article class="row s-'+k+'" data-id="'+esc(r.id)+'">'
+    + '<div class="sbtns">'+btns+'</div>'
+    + '<div><div class="top"><span class="pri'+star+'">'+esc(r.pri)+'</span><span class="name">'+inline(r.mod)+'</span><span class="compat'+warn+'">'+inline(r.compat)+'</span></div>'
+    + '<p class="what">'+inline(r.what)+'</p>'
+    + (r.notes ? '<p class="notes">'+inline(r.notes)+'</p>' : '')
+    + '<input class="note" data-id="'+esc(r.id)+'" placeholder="Your note..." value="'+esc(noteOf(r))+'"></div>'
+    + '</article>';
+}
+
+function render(){
+  const main = document.getElementById('main');
+  let html = '', shown = 0;
+  DATA.sections.forEach((s, si) => {
+    const list = rows.filter(r => r.si === si && visible(r));
+    if (!list.length) return;
+    shown += list.length;
+    html += '<section class="sec"><h2>'+esc(s.title)+' <small>'+list.length+' of '+s.rows.length+'</small></h2>'+list.map(rowHtml).join('')+'</section>';
+  });
+  if (!shown) html = '<div class="empty">Nothing matches those filters.</div>';
+  DATA.info.forEach(p => {
+    html += '<details><summary>'+esc(p.title)+'</summary><p>'+inline(p.text)+'</p></details>';
+  });
+  main.innerHTML = html;
+  stats();
+}
+
+function stats(){
+  const c = {todo:0, look:0, want:0, no:0, added:0};
+  rows.forEach(r => { c[statusOf(r)]++; });
+  const tot = rows.length;
+  const el = document.getElementById('stats');
+  el.innerHTML = ST.map(s => '<span class="stat">'+s.i+' '+s.l+' <b>'+c[s.k]+'</b></span>').join('') + '<span class="stat">Total <b>'+tot+'</b></span>';
+  const colors = {todo:'var(--todo)', look:'var(--look)', want:'var(--want)', no:'var(--no)', added:'var(--added)'};
+  document.getElementById('bar').innerHTML = ST.map(s => '<span style="width:'+(100*c[s.k]/tot)+'%;background:'+colors[s.k]+'"></span>').join('');
+}
+
+function summary(){
+  const g = {want:[], look:[], no:[], added:[]};
+  rows.forEach(r => { const k = statusOf(r); if (g[k]) g[k].push(r); });
+  const line = r => '- ' + plain(r.mod) + (noteOf(r) ? '  [' + noteOf(r) + ']' : '');
+  const head = {want:'WANT (add to the test pack)', look:'LOOKING INTO', no:'REJECTED', added:'ALREADY ADDED'};
+  let out = 'LARP SMP MOD DECISIONS - ' + new Date().toISOString().slice(0,10) + '\n';
+  ['want','look','no','added'].forEach(k => {
+    out += '\n' + head[k] + ' (' + g[k].length + ')\n' + (g[k].length ? g[k].map(line).join('\n') : '- none') + '\n';
+  });
+  const unrated = rows.filter(r => statusOf(r) === 'todo').length;
+  out += '\nUNDECIDED: ' + unrated + ' mods\n';
+  return out;
+}
+
+document.addEventListener('click', e => {
+  const sb = e.target.closest('.sb');
+  if (sb){
+    setStatus(sb.dataset.id, sb.dataset.k);
+    const row = sb.closest('.row');
+    row.className = 'row s-' + sb.dataset.k;
+    row.querySelectorAll('.sb').forEach(b => b.classList.toggle('on', b === sb));
+    stats();
+    if (F.stf) render();
+    return;
+  }
+});
+document.addEventListener('input', e => {
+  if (e.target.classList.contains('note')) setNote(e.target.dataset.id, e.target.value);
+});
+
+const q = document.getElementById('q');
+q.addEventListener('input', () => { F.q = q.value.trim(); render(); });
+const secSel = document.getElementById('sec');
+secSel.innerHTML = '<option value="">All sections</option>' + DATA.sections.map((s,i) => '<option value="'+i+'">'+esc(s.title)+'</option>').join('');
+secSel.addEventListener('change', () => { F.sec = secSel.value; render(); });
+document.getElementById('stf').addEventListener('change', e => { F.stf = e.target.value; render(); });
+document.querySelectorAll('[data-pri]').forEach(b => {
+  b.addEventListener('click', () => {
+    F.pri = b.dataset.pri;
+    document.querySelectorAll('[data-pri]').forEach(x => x.classList.toggle('on', x === b));
+    render();
+  });
+});
+document.querySelector('[data-pri=""]').classList.add('on');
+const h = document.getElementById('h182');
+h.addEventListener('click', () => { F.h182 = !F.h182; h.classList.toggle('on', F.h182); render(); });
+
+const dlg = document.getElementById('dlg'), ta = document.getElementById('ta');
+document.getElementById('summ').addEventListener('click', () => { ta.value = summary(); dlg.showModal(); ta.focus(); ta.select(); });
+document.getElementById('dclose').addEventListener('click', () => dlg.close());
+document.getElementById('dcopy').addEventListener('click', () => {
+  ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) {}
+  if (!ok && navigator.clipboard) navigator.clipboard.writeText(ta.value).catch(() => {});
+  document.getElementById('dcopy').textContent = 'Copied';
+  setTimeout(() => { document.getElementById('dcopy').textContent = 'Copy'; }, 1500);
+});
+document.getElementById('dl').addEventListener('click', () => {
+  const blob = new Blob([summary()], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'larp-mod-decisions-' + new Date().toISOString().slice(0,10) + '.txt';
+  document.body.appendChild(a); a.click(); a.remove();
+});
+document.getElementById('reset').addEventListener('click', () => {
+  if (confirm('Clear all your choices and notes in this browser and go back to the checklist file\'s marks?')){
+    saved = {}; persist(); render();
+  }
+});
+
+if (DATA.title) { document.title = DATA.title; document.getElementById('h1').textContent = DATA.title; }
+if (DATA.intro) { const el = document.getElementById('intro'); el.textContent = DATA.intro; el.hidden = false; }
+if (DATA.summaryLabel) document.getElementById('summ').textContent = DATA.summaryLabel;
+document.getElementById('sub').textContent = DATA.subtitle + ' · built ' + DATA.built + ' · choices are saved in this browser';
+render();
+</script>
+</body>
+</html>
